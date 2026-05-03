@@ -1,0 +1,36 @@
+# Netscape HTTP Cookie File
+# https://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file! Do not edit.
+
+.google.com	TRUE	/	TRUE	0	NID	531=XpMYWwdVHoSxi2bRT5wQsrbxsN_JNRVakKZwS04-Q4hswFQQsUnBEPAPY36Ir0mE6XoB-ai_TG3myUMqd1ajOHYfthMqr95P9zoVPoT5iN3ivGS9JaWepoYPlMOmza9HgWaT0NqoVJxMz0E0pnDhHzEzK58ONFCC7Qx3CCIe02olp7sOdZj2rCvO8puBkkduaqJKC8PmkXdT7BcVKJzXh7vlC4yZNt9fxHUycgfQf6ajC9tjk6Unc1uoupQFpDfpe4OD
+.google.com	TRUE	/	TRUE	0	AEC	AaJma5s7Xhv5hmzviFuQTa65Dids-f2Vf2LebMRyE3GGoHCRkUBBPeX1FGU
+.google.com	TRUE	/	TRUE	0	__Secure-BUCKET	CM8D
+.google.com	TRUE	/	FALSE	0	GOOGLE_ABUSE_EXEMPTION	ID=44206289cf4f492a:TM=1777824819:C=R:IP=45.145.56.206-:S=2NYYJnaWhlQvJRukEI9QlY0
+.google.com	TRUE	/verify	TRUE	0	SNID	AEDUgYbL0Xv1aUZfnOCTZoUANh8GP0Gkq4StC48Ktv6CWfYMohCwb1-VR_O_ezB4Im3tAjz0ji82Y4IgjjKzEJvN8mt-ihV7qv4
+.instagram.com	TRUE	/	TRUE	0	csrftoken	nrWXsNK9zdZXWq2qwebZScqYst1lRioB
+.instagram.com	TRUE	/	TRUE	0	ig_did	013FDBC5-43C5-44D5-9B6E-FDBF5ACE0661
+.instagram.com	TRUE	/	TRUE	0	ps_l	1
+.instagram.com	TRUE	/	TRUE	0	ps_n	1
+.instagram.com	TRUE	/	TRUE	0	mid	afd0SQAAAAG9nxoNrLrvC_F8JhCQ
+.instagram.com	TRUE	/	TRUE	0	datr	QXT3aU0mMbV7jJvNV74yiXtr
+.instagram.com	TRUE	/	TRUE	0	ds_user_id	23120929684
+.instagram.com	TRUE	/	TRUE	0	sessionid	23120929684%3AVMKPxKGf9ggth3%3A1%3AAYj6BswmAht1jlPVouYsMd-UJJlRSd374nSwzh9Cfw
+.instagram.com	TRUE	/	TRUE	0	rur	"RVA\05423120929684\0541809361277:01fe6971d7eb496b765c9ea1b98ef7cdc4024a522dc2da0c8ee4e4f76cf592d40df44ae8"
+chromewebstore.google.com	FALSE	/	TRUE	0	OTZ	8592012_44_44_123780_40_436260
+www.google.com	FALSE	/recaptcha	TRUE	0	_GRECAPTCHA	09AKhCRwhVEznGwYxej1g4BUgyHXmwm0LtwU9gU2RKI6ZrVIuGw_Ec4wOgC9WZpUwAPcOHCuVqSgGaWmWHc-ExS7c
+.google.com	TRUE	/	TRUE	0	NID	531=XpMYWwdVHoSxi2bRT5wQsrbxsN_JNRVakKZwS04-Q4hswFQQsUnBEPAPY36Ir0mE6XoB-ai_TG3myUMqd1ajOHYfthMqr95P9zoVPoT5iN3ivGS9JaWepoYPlMOmza9HgWaT0NqoVJxMz0E0pnDhHzEzK58ONFCC7Qx3CCIe02olp7sOdZj2rCvO8puBkkduaqJKC8PmkXdT7BcVKJzXh7vlC4yZNt9fxHUycgfQf6ajC9tjk6Unc1uoupQFpDfpe4OD
+.google.com	TRUE	/	TRUE	0	AEC	AaJma5s7Xhv5hmzviFuQTa65Dids-f2Vf2LebMRyE3GGoHCRkUBBPeX1FGU
+.google.com	TRUE	/	TRUE	0	__Secure-BUCKET	CM8D
+.google.com	TRUE	/	FALSE	0	GOOGLE_ABUSE_EXEMPTION	ID=44206289cf4f492a:TM=1777824819:C=R:IP=45.145.56.206-:S=2NYYJnaWhlQvJRukEI9QlY0
+.google.com	TRUE	/verify	TRUE	0	SNID	AEDUgYbL0Xv1aUZfnOCTZoUANh8GP0Gkq4StC48Ktv6CWfYMohCwb1-VR_O_ezB4Im3tAjz0ji82Y4IgjjKzEJvN8mt-ihV7qv4
+.instagram.com	TRUE	/	TRUE	0	csrftoken	nrWXsNK9zdZXWq2qwebZScqYst1lRioB
+.instagram.com	TRUE	/	TRUE	0	ig_did	013FDBC5-43C5-44D5-9B6E-FDBF5ACE0661
+.instagram.com	TRUE	/	TRUE	0	ps_l	1
+.instagram.com	TRUE	/	TRUE	0	ps_n	1
+.instagram.com	TRUE	/	TRUE	0	mid	afd0SQAAAAG9nxoNrLrvC_F8JhCQ
+.instagram.com	TRUE	/	TRUE	0	datr	QXT3aU0mMbV7jJvNV74yiXtr
+.instagram.com	TRUE	/	TRUE	0	ds_user_id	23120929684
+.instagram.com	TRUE	/	TRUE	0	sessionid	23120929684%3AVMKPxKGf9ggth3%3A1%3AAYj6BswmAht1jlPVouYsMd-UJJlRSd374nSwzh9Cfw
+.instagram.com	TRUE	/	TRUE	0	rur	"RVA\05423120929684\0541809361277:01fe6971d7eb496b765c9ea1b98ef7cdc4024a522dc2da0c8ee4e4f76cf592d40df44ae8"
+chromewebstore.google.com	FALSE	/	TRUE	0	OTZ	8592012_44_44_123780_40_436260
+www.google.com	FALSE	/recaptcha	TRUE	0	_GRECAPTCHA	09AKhCRwhVEznGwYxej1g4BUgyHXmwm0LtwU9gU2RKI6ZrVIuGw_Ec4wOgC9WZpUwAPcOHCuVqSgGaWmWHc-ExS7c
