@@ -7,14 +7,13 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils import executor
 import yt_dlp
 
-BOT_TOKEN = os.getenv("8588734749:AAGa-uGlO0e9uZLuCEMvwFv1tL1AudoQmuY")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
-    raise ValueError("8588734749:AAGa-uGlO0e9uZLuCEMvwFv1tL1AudoQmuY")
+    raise ValueError("BOT_TOKEN не задан в переменных окружения")
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
-# Настройки для yt-dlp
 YDL_OPTS = {
     'format': 'bestvideo+bestaudio/best',
     'merge_output_format': 'mp4',
@@ -24,20 +23,17 @@ YDL_OPTS = {
     'extract_flat': False,
 }
 
-# Если есть cookies.txt для Instagram
 COOKIES_PATH = "cookies.txt"
 if os.path.exists(COOKIES_PATH):
     YDL_OPTS['cookiefile'] = COOKIES_PATH
 
 def is_supported_url(url: str) -> tuple:
-    """Проверяет, поддерживается ли ссылка"""
     patterns = {
         'instagram': r'(instagram\.com|instagr\.am)',
         'youtube': r'(youtube\.com|youtu\.be)',
         'tiktok': r'(tiktok\.com|vm\.tiktok\.com)',
         'twitter': r'(twitter\.com|x\.com)',
         'facebook': r'(facebook\.com|fb\.watch)',
-        'pinterest': r'(pinterest\.com|pin\.it)',
     }
     for platform, pattern in patterns.items():
         if re.search(pattern, url.lower()):
@@ -45,38 +41,29 @@ def is_supported_url(url: str) -> tuple:
     return False, None
 
 def download_video(url: str) -> tuple:
-    """Скачивает видео и возвращает путь к файлу и название"""
     try:
         os.makedirs("downloads", exist_ok=True)
-        
         with yt_dlp.YoutubeDL(YDL_OPTS) as ydl:
             info = ydl.extract_info(url, download=True)
             filename = ydl.prepare_filename(info)
-            
-            # Если формат mp4 слияния дал другое имя
             if not os.path.exists(filename):
                 base = filename.rsplit('.', 1)[0]
                 for f in os.listdir("downloads"):
                     if f.startswith(os.path.basename(base)):
                         filename = os.path.join("downloads", f)
                         break
-            
             title = info.get('title', 'video')[:50]
             return filename, title
-            
     except Exception as e:
         return None, str(e)
 
 def get_platform_keyboard(platform: str, url: str):
-    """Клавиатура с предложением других действий"""
     keyboard = InlineKeyboardMarkup(row_width=2)
-    
     if platform == 'youtube':
         keyboard.add(
             InlineKeyboardButton("🎵 Скачать аудио", callback_data=f"audio_{url[:50]}"),
             InlineKeyboardButton("📱 Выбрать качество", callback_data=f"quality_{url[:50]}")
         )
-    
     keyboard.add(InlineKeyboardButton("🔄 Другая ссылка", callback_data="new"))
     return keyboard
 
@@ -88,7 +75,7 @@ async def start_cmd(message: types.Message):
         "• Instagram (Reels/посты)\n"
         "• YouTube / YouTube Shorts\n"
         "• TikTok\n"
-        "• Facebook, Twitter/X, Pinterest\n\n"
+        "• Facebook, Twitter/X\n\n"
         "Я скачаю его без водяного знака и отправлю тебе.",
         parse_mode="Markdown"
     )
@@ -97,23 +84,16 @@ async def start_cmd(message: types.Message):
 async def handle_url(message: types.Message):
     url = message.text.strip()
     supported, platform = is_supported_url(url)
-    
     if not supported:
         await message.answer(
             "❌ Неподдерживаемая ссылка.\n\n"
-            "Поддерживаются: Instagram, YouTube, TikTok, Facebook, Twitter, Pinterest.\n"
+            "Поддерживаются: Instagram, YouTube, TikTok, Facebook, Twitter.\n"
             "Отправь ссылку с одной из этих платформ."
         )
         return
-    
-    # Сообщение о начале загрузки
     status_msg = await message.answer(f"⏳ Скачиваю видео с {platform.upper()}...\nЭто может занять 10-30 секунд.")
-    
-    # Скачиваем ❄️
     filepath, title = download_video(url)
-    
     if filepath and os.path.exists(filepath):
-        # Отправляем видео
         with open(filepath, 'rb') as video_file:
             await bot.delete_message(message.chat.id, status_msg.message_id)
             await message.answer_video(
@@ -122,8 +102,6 @@ async def handle_url(message: types.Message):
                 parse_mode="Markdown",
                 reply_markup=get_platform_keyboard(platform, url)
             )
-        
-        # Удаляем файл после отправки
         os.remove(filepath)
     else:
         await status_msg.edit_text(f"❌ Ошибка при скачивании:\n`{title[:200]}`\n\nПроверь ссылку и попробуй снова.", parse_mode="Markdown")
@@ -136,7 +114,6 @@ async def new_link_callback(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data.startswith("audio_"))
 async def audio_callback(callback_query: types.CallbackQuery):
     await callback_query.answer("Функция аудио в разработке — скоро будет готова.")
-    # Здесь можно добавить скачивание только аудио через yt-dlp с format='bestaudio/best'
 
 if __name__ == "__main__":
     print("🚀 Бот запущен...")
