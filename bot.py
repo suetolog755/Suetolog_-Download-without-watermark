@@ -1,7 +1,6 @@
 import os
 import re
 import asyncio
-import subprocess
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils import executor
@@ -14,6 +13,7 @@ if not BOT_TOKEN:
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
+# Настройки yt-dlp
 YDL_OPTS = {
     'format': 'bestvideo+bestaudio/best',
     'merge_output_format': 'mp4',
@@ -21,6 +21,7 @@ YDL_OPTS = {
     'quiet': True,
     'no_warnings': True,
     'extract_flat': False,
+    'ignoreerrors': True,
 }
 
 COOKIES_PATH = "cookies.txt"
@@ -31,9 +32,10 @@ def is_supported_url(url: str) -> tuple:
     patterns = {
         'instagram': r'(instagram\.com|instagr\.am)',
         'youtube': r'(youtube\.com|youtu\.be)',
-        'tiktok': r'(tiktok\.com|vm\.tiktok\.com)',
-        'twitter': r'(twitter\.com|x\.com)',
         'facebook': r'(facebook\.com|fb\.watch)',
+        'twitter': r'(twitter\.com|x\.com)',
+        # TikTok временно отключён (ждём исправления yt-dlp)
+        # 'tiktok': r'(tiktok\.com|vm\.tiktok\.com)',
     }
     for platform, pattern in patterns.items():
         if re.search(pattern, url.lower()):
@@ -45,6 +47,9 @@ def download_video(url: str) -> tuple:
         os.makedirs("downloads", exist_ok=True)
         with yt_dlp.YoutubeDL(YDL_OPTS) as ydl:
             info = ydl.extract_info(url, download=True)
+            if info is None:
+                return None, "Не удалось получить информацию о видео"
+            
             filename = ydl.prepare_filename(info)
             if not os.path.exists(filename):
                 base = filename.rsplit('.', 1)[0]
@@ -52,18 +57,14 @@ def download_video(url: str) -> tuple:
                     if f.startswith(os.path.basename(base)):
                         filename = os.path.join("downloads", f)
                         break
+            
             title = info.get('title', 'video')[:50]
             return filename, title
     except Exception as e:
         return None, str(e)
 
 def get_platform_keyboard(platform: str, url: str):
-    keyboard = InlineKeyboardMarkup(row_width=2)
-    if platform == 'youtube':
-        keyboard.add(
-            InlineKeyboardButton("🎵 Скачать аудио", callback_data=f"audio_{url[:50]}"),
-            InlineKeyboardButton("📱 Выбрать качество", callback_data=f"quality_{url[:50]}")
-        )
+    keyboard = InlineKeyboardMarkup(row_width=1)
     keyboard.add(InlineKeyboardButton("🔄 Другая ссылка", callback_data="new"))
     return keyboard
 
@@ -74,9 +75,9 @@ async def start_cmd(message: types.Message):
         "Просто отправь мне ссылку на видео из:\n"
         "• Instagram (Reels/посты)\n"
         "• YouTube / YouTube Shorts\n"
-        "• TikTok\n"
         "• Facebook, Twitter/X\n\n"
-        "Я скачаю его без водяного знака и отправлю тебе.",
+        "⚠️ TikTok временно недоступен (обновляется).\n\n"
+        "Я скачаю видео без водяного знака и отправлю тебе.",
         parse_mode="Markdown"
     )
 
@@ -84,16 +85,20 @@ async def start_cmd(message: types.Message):
 async def handle_url(message: types.Message):
     url = message.text.strip()
     supported, platform = is_supported_url(url)
+    
     if not supported:
         await message.answer(
             "❌ Неподдерживаемая ссылка.\n\n"
-            "Поддерживаются: Instagram, YouTube, TikTok, Facebook, Twitter.\n"
+            "Поддерживаются: Instagram, YouTube, Facebook, Twitter.\n"
             "Отправь ссылку с одной из этих платформ."
         )
         return
+    
     status_msg = await message.answer(f"⏳ Скачиваю видео с {platform.upper()}...\nЭто может занять 10-30 секунд.")
+    
     filepath, title = download_video(url)
-    if filepath and os.path.exists(filepath):
+    
+    if filepath and os.path.exists(filepath) and os.path.getsize(filepath) > 0:
         with open(filepath, 'rb') as video_file:
             await bot.delete_message(message.chat.id, status_msg.message_id)
             await message.answer_video(
@@ -104,7 +109,14 @@ async def handle_url(message: types.Message):
             )
         os.remove(filepath)
     else:
-        await status_msg.edit_text(f"❌ Ошибка при скачивании:\n`{title[:200]}`\n\nПроверь ссылку и попробуй снова.", parse_mode="Markdown")
+        await status_msg.edit_text(
+            f"❌ Ошибка при скачивании:\n`{title[:200]}`\n\n"
+            f"📌 Возможные причины:\n"
+            f"• Видео недоступно\n"
+            f"• Аккаунт в Instagram приватный (нужны cookies)\n"
+            f"• Ссылка битая",
+            parse_mode="Markdown"
+        )
 
 @dp.callback_query_handler(lambda c: c.data == "new")
 async def new_link_callback(callback_query: types.CallbackQuery):
@@ -113,8 +125,8 @@ async def new_link_callback(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data.startswith("audio_"))
 async def audio_callback(callback_query: types.CallbackQuery):
-    await callback_query.answer("Функция аудио в разработке — скоро будет готова.")
+    await callback_query.answer("Функция аудио будет добавлена позже.")
 
 if __name__ == "__main__":
-    print("🚀 Бот запущен...")
+    print("🚀 Бот запущен. Поддерживаются: Instagram, YouTube, Facebook, Twitter")
     executor.start_polling(dp, skip_updates=True)
